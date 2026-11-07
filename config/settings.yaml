@@ -1,0 +1,69 @@
+# Central configuration. Every path is relative to the project root (bnk/).
+# Code reads this through concall.config.load_settings(); nothing else hard-codes paths.
+# Secrets (HF_TOKEN, ANTHROPIC_API_KEY) go in bnk/.env, never in this file. See .env.example.
+
+paths:
+  manifest: data/manifest/calls.csv      # one row per earnings call (the "registry")
+  raw_audio: data/audio/raw              # files exactly as downloaded
+  audio: data/audio/clean                # normalised 16 kHz mono FLAC (what every step reads)
+  audio_meta: data/audio/meta            # source metadata (e.g. YouTube title/duration) per call
+  transcripts: data/transcripts          # one JSON per call (Whisper output)
+  diarization: data/diarization          # Phase 2: who-spoke-when turns per call
+  utterances: data/utterances            # Phase 2: speaker-labelled utterances with roles (Parquet)
+  text: data/text                        # Phase 3: FinBERT + hedging per sentence (Parquet)
+  llm: data/llm                          # Phase 3: LLM extraction per call (JSON)
+  features: data/features                # voice features + the call-level feature table
+  market: data/market                    # Phase 5: cached daily prices
+  results: data/results                  # Phase 5: event-study tables and regression output
+
+audio:
+  sample_rate: 16000      # Whisper and pyannote both expect 16 kHz
+  keep_raw: false         # delete the original download after conversion (disk is tight)
+
+transcription:
+  model: small            # tiny | base | small | medium | large-v3   (bigger = slower, more accurate)
+  device: auto            # auto | cpu | cuda
+  compute_type: int8      # used on CPU; GPU always uses float16
+  language: en            # Indian concalls are in English; fixing it avoids mis-detection
+  beam_size: 5
+  vad_filter: true        # skip hold music / silence before transcribing
+  chunk_s: 600            # transcribe in ~10-min pieces cut at silences (whole-call input ran out of RAM)
+  # Biases Whisper toward finance jargon it otherwise mishears ("CASA" -> "cost").
+  initial_prompt: >-
+    Earnings conference call of an Indian listed company. Terms: CASA ratio, NIM, net interest margin,
+    GNPA, NNPA, PCR, credit cost, slippages, RoA, RoE, PAT, EBITDA, bps, crore, lakh, YoY, QoQ,
+    attrition, TCV, deal wins, constant currency, guidance.
+
+voice:
+  pitch_method: yin       # yin (fast) | pyin (slower, more accurate voicing)
+  fmin_hz: 65             # covers low male voices
+  fmax_hz: 400            # covers high female voices
+  hop_length: 320         # 20 ms frames at 16 kHz
+  min_periodicity: 0.5    # YIN frames below this self-similarity are treated as noise, not voice
+  pause_min_s: 0.25       # a gap between words shorter than this is not a pause
+  long_pause_s: 1.0       # "long pause" threshold
+
+diarization:
+  model: pyannote/speaker-diarization-community-1   # needs HF_TOKEN + accepting the model terms on huggingface.co
+  device: auto
+  min_speakers: 2
+  max_speakers: 30        # moderator + 3-6 management + many analysts
+
+text:
+  finbert_model: ProsusAI/finbert
+  batch_size: 16
+  device: auto
+  hedging_lexicon: config/lexicons/hedging.txt
+
+llm:
+  model: claude-opus-5-5
+  effort: medium          # low | medium | high; extraction is a structured reading task
+  max_tokens: 16000
+
+event_study:
+  benchmark: "^NSEI"      # Nifty 50 on Yahoo Finance
+  market_close_ist: "15:30"
+  windows: [[0, 0], [0, 4], [0, 29]]      # 1, 5 and 30 trading days starting at day 0
+  estimation_window: [-250, -30]          # for the market model (alpha + beta)
+  model: market_adjusted  # market_adjusted (AR = r - r_m, as in README) | market_model (AR = r - a - b*r_m)
+  pre_volume_window: [-60, -11]           # baseline for abnormal volume

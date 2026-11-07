@@ -1,0 +1,72 @@
+# Hedging / uncertainty lexicon (one term per line; multi-word phrases allowed; '#' = comment).
+# Built from the categories in Loughran & McDonald (2011) "Uncertainty" and "Weak Modal" word lists
+# and from phrases common in Indian earnings calls. Matching is case-insensitive, whole words.
+# Rate is reported per 1,000 words so long and short answers are comparable.
+
+# weak modals
+may
+might
+could
+possibly
+perhaps
+maybe
+probably
+likely
+unlikely
+somewhat
+# uncertainty
+uncertain
+uncertainty
+uncertainties
+unclear
+unpredictable
+volatile
+volatility
+risk
+risks
+depend
+depends
+depending
+dependent
+contingent
+approximately
+roughly
+around
+assume
+assumption
+assumptions
+believe
+anticipate
+estimate
+estimates
+tentative
+fluctuate
+fluctuations
+# conversational hedges
+sort of
+kind of
+more or less
+to some extent
+we think
+we feel
+we hope
+hopefully
+i think
+i would say
+you know
+let us see
+let's see
+too early to say
+difficult to say
+hard to say
+it is difficult
+it's difficult
+challenging
+headwinds
+cautious
+cautiously
+wait and watch
+we'll see
+we will see
+broadly
+in the range of

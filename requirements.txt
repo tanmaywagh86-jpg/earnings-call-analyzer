@@ -1,0 +1,35 @@
+# Install (Windows, GPU): see BUILD_LOG "Step 2.0". Short version:
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu126
+#   pip install -r requirements.txt && pip install -e .
+
+# Phase 1: transcription + voice features
+faster-whisper      # Whisper on CTranslate2: ~4x faster than openai-whisper
+librosa             # pitch (YIN/pYIN), energy
+soundfile           # read/write FLAC/WAV
+pandas
+pyarrow             # Parquet storage
+pyyaml              # config/settings.yaml
+requests            # downloading audio files
+yt-dlp              # downloading company-published recordings from YouTube
+tqdm
+python-dotenv       # loads secrets from .env
+
+# Phase 2: speaker diarization
+pyannote.audio      # needs torch (installed first, from the CUDA index above)
+
+# Phase 3: text signals
+transformers        # FinBERT
+anthropic           # Claude: guidance / evasiveness / KPI extraction
+pydantic            # schema for the structured LLM output
+
+# Phase 5: event study
+yfinance            # NSE prices + Nifty 50
+statsmodels         # OLS with robust standard errors
+
+# Phase 6: API
+fastapi
+uvicorn
+
+# dev
+pytest
+httpx               # FastAPI TestClient
