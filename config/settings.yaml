@@ -4,6 +4,7 @@
 
 paths:
   manifest: data/manifest/calls.csv      # one row per earnings call (the "registry")
+  fundamentals: data/manifest/fundamentals.csv  # hand-verified YoY NII / PAT growth per call (controls)
   raw_audio: data/audio/raw              # files exactly as downloaded
   audio: data/audio/clean                # normalised 16 kHz mono FLAC (what every step reads)
   audio_meta: data/audio/meta            # source metadata (e.g. YouTube title/duration) per call

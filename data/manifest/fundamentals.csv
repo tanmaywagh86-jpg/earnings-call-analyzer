@@ -1,0 +1,32 @@
+call_id,yoy_revenue_growth_pct,yoy_profit_growth_pct,source
+ICICIBANK_FY24Q1,38.0,39.7,"ICICI Bank press release Q1 FY2024: NII 18,227 vs 13,210; PAT 9,648 vs 6,905"
+ICICIBANK_FY24Q2,23.8,35.8,"ICICI Bank Q2 FY2024 results as stated on the call; NII level 18,308 matches Screener"
+ICICIBANK_FY24Q3,13.4,23.6,"ICICI Bank Q3 FY2024 results as stated on the call; NII level 18,679 matches Screener"
+ICICIBANK_FY24Q4,8.1,17.4,"ICICI Bank Q4 FY2024 results as stated on the call; NII level 19,092 matches Screener"
+ICICIBANK_FY25Q1,7.3,14.6,"Screener Jun 2024 vs ICICI press release Q1 FY2024 (NII 18,227, PAT 9,648)"
+ICICIBANK_FY25Q2,9.5,14.5,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY25Q3,9.1,14.8,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY25Q4,11.0,17.9,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY26Q1,10.6,15.5,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY26Q2,7.4,5.2,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY26Q3,7.7,-4.0,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY26Q4,8.4,8.5,screener.in/company/ICICIBANK/ (standalone quarterly results)
+ICICIBANK_FY27Q1,12.7,15.9,screener.in/company/ICICIBANK/ (standalone quarterly results)
+HDFCBANK_FY26Q4,3.2,9.1,screener.in/company/HDFCBANK/ (standalone quarterly results)
+HDFCBANK_FY27Q2,9.7,4.7,screener.in/company/HDFCBANK/ (standalone quarterly results)
+HDFCBANK_FY24Q1,21.1,30.0,"HDFC Bank Q1 FY24 results (Business Standard): NII 23,599 vs 19,481; PAT 11,952, +30%"
+HDFCBANK_FY25Q1,,,Not comparable: Jun 2023 base predates the 1 Jul 2023 merger with HDFC Ltd
+AXISBANK_FY24Q1,27.0,40.5,"Axis Bank press release Q1FY24: NII +27% YoY; PAT 5,797.10 vs 4,125.26"
+AXISBANK_FY24Q2,18.9,10.0,"Axis Bank press release Q2FY24: NII 12,314.56 vs 10,360.26; PAT 5,864, +10% YoY"
+AXISBANK_FY24Q3,9.0,3.7,"Axis Bank press release Q3FY24: NII +9% YoY; PAT 6,071, +3.7% YoY"
+AXISBANK_FY24Q4,11.5,,"Axis Bank press release Q4FY24: NII 13,089 vs 11,742.2; PAT YoY not meaningful (Q4FY23 net loss of 5,728 from the Citibank India acquisition)"
+AXISBANK_FY25Q1,12.5,4.1,"Screener Jun 2024 vs Axis press release Q1FY24 (NII 11,959, PAT 5,797)"
+AXISBANK_FY25Q2,9.5,18.0,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY25Q3,8.6,3.8,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY25Q4,5.5,-0.2,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY26Q1,0.8,-3.8,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY26Q2,1.9,-26.4,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY26Q3,5.0,3.0,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY26Q4,4.7,-0.7,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY27Q1,8.0,22.5,screener.in/company/AXISBANK/ (standalone quarterly results)
+AXISBANK_FY27Q2,11.8,37.6,screener.in/company/AXISBANK/ (standalone quarterly results)

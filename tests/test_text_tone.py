@@ -6,7 +6,7 @@ import pytest
 
 from concall.manifest import quarter_index
 from concall.text import count_hedges, split_sentences
-from concall.tone import add_qoq, llm_features, text_features
+from concall.tone import add_fundamentals, add_qoq, llm_features, text_features
 
 
 def test_hedges_whole_words_and_phrases():
@@ -60,3 +60,15 @@ def test_qoq_only_for_consecutive_quarters():
 
 def test_quarter_index_rolls_over_fiscal_year():
     assert quarter_index("FY26Q1") - quarter_index("FY25Q4") == 1
+
+
+def test_fundamentals_override_llm_and_keep_deliberate_blanks():
+    fund = pd.DataFrame([{"call_id": "A_FY25Q1", "yoy_revenue_growth_pct": 12.5, "yoy_profit_growth_pct": None},
+                         {"call_id": "B_FY25Q1", "yoy_revenue_growth_pct": 3.0, "yoy_profit_growth_pct": 4.0}])
+    # LLM misheard the numbers; the published results win, and an empty cell stays empty
+    rec = add_fundamentals({"call_id": "A_FY25Q1", "yoy_revenue_growth_pct": 99.0,
+                            "yoy_profit_growth_pct": 50.0}, fund)
+    assert rec["yoy_revenue_growth_pct"] == 12.5 and np.isnan(rec["yoy_profit_growth_pct"])
+    # a call not in the table keeps whatever the LLM gave
+    rec = add_fundamentals({"call_id": "C_FY25Q1", "yoy_revenue_growth_pct": 7.0}, fund)
+    assert rec["yoy_revenue_growth_pct"] == 7.0

@@ -82,6 +82,34 @@ def llm_features(doc: dict | None) -> dict:
     }
 
 
+FUNDAMENTALS = ["yoy_revenue_growth_pct", "yoy_profit_growth_pct"]
+
+
+def load_fundamentals() -> pd.DataFrame:
+    """Hand-verified YoY growth per call (banks: net interest income and standalone PAT), from the
+    published quarterly results. Empty cells mean "not comparable" (e.g. a loss or a merger in the base
+    quarter). Returns an empty frame if the file doesn't exist."""
+    try:
+        p = load_settings().path("fundamentals")
+    except KeyError:
+        return pd.DataFrame(columns=["call_id", *FUNDAMENTALS])
+    if not p.exists():
+        return pd.DataFrame(columns=["call_id", *FUNDAMENTALS])
+    return pd.read_csv(p, usecols=["call_id", *FUNDAMENTALS])
+
+
+def add_fundamentals(rec: dict, fund: pd.DataFrame) -> dict:
+    """The hand-verified table wins over the LLM's reading of the call: it comes from the published
+    results, while the LLM (or a transcript) can mishear a number. A row in the table is
+    authoritative even when a cell is empty (i.e. deliberately not comparable)."""
+    row = fund[fund["call_id"] == rec["call_id"]]
+    if len(row):
+        for f in FUNDAMENTALS:
+            v = row.iloc[0][f]
+            rec[f] = float(v) if pd.notna(v) else np.nan
+    return rec
+
+
 def add_contrasts(row: dict) -> dict:
     for s in CONTRASTS:
         qa, prep = row.get(f"mgmt_{s}_qa", np.nan), row.get(f"mgmt_{s}_prep", np.nan)
@@ -102,6 +130,7 @@ def add_qoq(df: pd.DataFrame) -> pd.DataFrame:
 
 def build_table(calls: pd.DataFrame) -> pd.DataFrame:
     rows = []
+    fund = load_fundamentals()
     for cid, row in calls.iterrows():
         tp, up = text.text_path(cid), voice.utterance_features_path(cid)
         if not tp.exists():
@@ -116,6 +145,7 @@ def build_table(calls: pd.DataFrame) -> pd.DataFrame:
         if up.exists():
             rec.update(voice_features(pd.read_parquet(up)))
         rec.update(llm_features(llm.load_llm(cid)))
+        rec = add_fundamentals(rec, fund)
         rows.append(add_contrasts(rec))
     df = add_qoq(pd.DataFrame(rows)) if rows else pd.DataFrame()
     if not df.empty:

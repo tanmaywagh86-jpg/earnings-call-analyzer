@@ -458,9 +458,11 @@ is a cheaper check than installing Docker locally, and it keeps checking on ever
 
 ### Step 2.13: All 14 Axis calls → 30-call sample  (2026-11-07)
 - The remaining 10 Axis calls (FY24Q2–FY27Q2) ran in about 1.5 h with no failures; the GPU-memory fix
-  from step 2.10 held on every call. The batch script kept the PC awake with
-  `SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)` while it ran, instead of changing
-  power settings. Gotcha: `*>>` in Windows PowerShell 5.1 writes the log as **UTF-16**, so `grep` saw
+  from step 2.10 held on every call. The batch script was *meant* to keep the PC awake with
+  `SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)`, but that call silently failed:
+  PowerShell reads `0x80000001` as a negative Int32, so `[uint32]0x80000001` throws, and the error
+  only went to a log nobody read. The batch finished because the laptop happened not to sleep.
+  (Fix: write the flag as `[uint32]2147483649`.) Gotcha: `*>>` in Windows PowerShell 5.1 writes the log as **UTF-16**, so `grep` saw
   "binary file"; the log watcher strips NUL bytes first.
 - **The "Axis effect" was mostly noise.** Mean Axis day-0 CAR went from −4.0% (4 calls) to −1.0%
   (14 calls). Company dummies alone now explain nothing (adj. R² 0.41 → 0.01).
@@ -478,8 +480,36 @@ same company is what exposed it. Also: when you scan many features, the best one
 good. The honest response is to name it as a hypothesis and test it on calls that weren't used
 to find it.
 
-<!-- NEXT (optional): test the QoQ-tone-change lead out of sample (next quarters' calls / other
-     banks); YoY growth controls (hand-filled CSV from results press releases); find ICICI FY26Q1 audio -->
+### Step 2.14: ICICI FY26Q1 found; YoY growth controls filled → all 31 calls  (2026-11-07)
+- **ICICI FY26Q1 audio:** the bank's results page links the FY25Q4 video by mistake. The correct replay
+  ("Replay of Q1-2026 earnings call ... held on July 19, 2025") is on the official ICICI Bank YouTube
+  channel. I checked that it has the **same `channel_id`** as the other ICICI calls before trusting it,
+  since anyone can upload a video with that title. Processed in ~8 min, 8 speakers.
+- **YoY controls without the LLM:** `data/manifest/fundamentals.csv` (built by
+  `scripts/build_fundamentals.py`, sources per row) holds YoY growth in **net interest income** and
+  **standalone PAT**. `tone.add_fundamentals()` fills the controls from it; it overrides the LLM because
+  it comes from published results. Levels are from Screener's standalone quarterly tables
+  (NII = Revenue − Interest); FY24 rows, whose year-earlier quarter is off that table, come from the
+  banks' press releases.
+  - **Transcripts were not good enough on their own:** Whisper turned ICICI FY25Q1's "14.6%" into
+    "10%" and "110.59 billion" into "116.96", and Axis quotes subsidiary or half-year profits in the same
+    breath. Where both exist, the table matches what management says (e.g. ICICI NII 18,308 crore =
+    "183.08 billion").
+  - **Deliberate blanks:** HDFC FY25Q1 (the Jun 2023 base predates the HDFC Ltd merger) and Axis FY24Q4
+    PAT (the Q4FY23 base was a 5,728 crore loss from the Citibank India acquisition).
+- **Results (31 calls):** growth controls alone have adj. R² −0.06 to +0.02, so the reported numbers don't
+  explain the reaction either (expected growth isn't a surprise). No call feature has p < 0.12 in any model.
+- **The tone-change lead weakened.** ICICI FY26Q1 created two new ICICI pairs that weren't used to find
+  the lead, and they went against it: ICICI ρ 0.43 → 0.18. Days 0–4: ρ 0.58 → 0.51, and with company FE
+  + growth controls p = 0.13. It now rests almost entirely on Axis.
+
+**Learn:** a lead found by scanning should be expected to shrink when new data arrives, and here it
+did, after just two new data points. Writing it up as "a hypothesis, not a finding" in step 2.13 was the
+right call.
+
+<!-- NEXT (optional): when FY27Q3 results arrive (Jan 2027), add those calls and see whether the
+     tone-change effect holds out of sample, especially outside Axis -->
+
 
 
 
