@@ -1,5 +1,7 @@
 # Earnings Call Voice & Sentiment Analyzer
 
+[![docker](https://github.com/tanmaywagh86-jpg/earnings-call-analyzer/actions/workflows/docker.yml/badge.svg)](https://github.com/tanmaywagh86-jpg/earnings-call-analyzer/actions/workflows/docker.yml)
+
 > **Status:** All six phases are implemented and tested, and the pipeline has been run end to end on **20 real earnings calls** (ICICI, HDFC and Axis Bank). See [Results](#results) below, [`BUILD_LOG.md`](BUILD_LOG.md) for the build journal and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the code structure.
 
 Every quarter, listed companies hold **earnings calls** where management presents results and answers analysts' questions. Analysts listen not only to *what* executives say but *how* they say it: hesitation, evasive answers and shifts in tone.

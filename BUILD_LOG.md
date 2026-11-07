@@ -440,8 +440,25 @@ real (null) finding, not a failure. The design can now tell a company effect fro
 and the next gains come from more calls *per bank*: within-bank comparisons on 4 Axis calls have
 almost no power.
 
-<!-- NEXT: YoY growth controls (LLM is off: needs another source, e.g. a hand-filled CSV from the
-     banks' results press releases); process remaining 10 Axis calls for within-bank power -->
+### Step 2.12: Published, and the API / Docker image checked  (2026-11-07)
+- Code pushed to GitHub (public): `tanmaywagh86-jpg/earnings-call-analyzer`. `.gitignore` now keeps
+  all generated data out except `data/manifest/` and `data/results/`; `.env` is never committed.
+- README gained a **Results** section: the scripted-vs-Q&A contrast (hedging 1.6 → 37.7 per 1k words,
+  higher in Q&A in 19 of 20 calls) and the company-fixed-effects null result.
+- **API checked locally on the 20-call data:** `/health`, `/calls` (31), `/calls/{id}/report` (full
+  report for processed calls, status only for unprocessed ones, 404 for unknown ids),
+  `/results/regressions` (includes the new `company_fe` column).
+- **Docker:** not installed on the laptop (Docker Desktop needs WSL2 and several GB, too heavy for an
+  8 GB machine). Instead, a GitHub Actions workflow (`.github/workflows/docker.yml`) builds the image
+  on every push, starts it with `data/` mounted, and smoke-tests the API. First run: **passed (3 min)**.
+  Pushing a workflow file needed the token's extra `workflow` scope (`gh auth refresh -s workflow`).
+
+**Learn:** "it works on my machine" isn't checked until something else builds it. A free CI runner
+is a cheaper check than installing Docker locally, and it keeps checking on every push.
+
+<!-- NEXT (optional): YoY growth controls (LLM is off: needs another source, e.g. a hand-filled CSV
+     from the banks' results press releases); process remaining 10 Axis calls for within-bank power -->
+
 
 
 
