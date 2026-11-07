@@ -1,0 +1,35 @@
+# Builds the Docker image and smoke-tests the API inside it.
+# The repo's data/ (call manifest + result tables) is mounted, as in the Dockerfile's run example.
+name: docker
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t concall .
+
+      - name: Start API container
+        run: docker run -d --name api -p 8000:8000 -v "$PWD/data:/app/data" concall
+
+      - name: Smoke-test endpoints
+        run: |
+          for i in $(seq 1 60); do curl -sf http://127.0.0.1:8000/health && break; sleep 2; done
+          echo; set -x
+          curl -sf http://127.0.0.1:8000/health
+          test "$(curl -s http://127.0.0.1:8000/calls | python3 -c 'import json,sys; print(len(json.load(sys.stdin)))')" -gt 0
+          curl -sf http://127.0.0.1:8000/results/regressions | python3 -c 'import json,sys; d=json.load(sys.stdin); assert d and "company_fe" in d[0], d[:1]'
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/calls/NOPE_FY99Q1/report)" = 404
+
+      - name: Container logs
+        if: always()
+        run: docker logs api
