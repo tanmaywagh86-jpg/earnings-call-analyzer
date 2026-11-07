@@ -456,8 +456,31 @@ almost no power.
 **Learn:** "it works on my machine" isn't checked until something else builds it. A free CI runner
 is a cheaper check than installing Docker locally, and it keeps checking on every push.
 
-<!-- NEXT (optional): YoY growth controls (LLM is off: needs another source, e.g. a hand-filled CSV
-     from the banks' results press releases); process remaining 10 Axis calls for within-bank power -->
+### Step 2.13: All 14 Axis calls → 30-call sample  (2026-11-07)
+- The remaining 10 Axis calls (FY24Q2–FY27Q2) ran in about 1.5 h with no failures; the GPU-memory fix
+  from step 2.10 held on every call. The batch script kept the PC awake with
+  `SetThreadExecutionState(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)` while it ran, instead of changing
+  power settings. Gotcha: `*>>` in Windows PowerShell 5.1 writes the log as **UTF-16**, so `grep` saw
+  "binary file"; the log watcher strips NUL bytes first.
+- **The "Axis effect" was mostly noise.** Mean Axis day-0 CAR went from −4.0% (4 calls) to −1.0%
+  (14 calls). Company dummies alone now explain nothing (adj. R² 0.41 → 0.01).
+- **Levels: clean null.** All models, pooled or FE, adj. R² between −0.20 and +0.02; no p < 0.2.
+- **Scripted vs Q&A holds:** hedging 2.1 → 19.4 per 1k words (median), higher in Q&A in 29 of 30 calls.
+- **New lead: quarter-over-quarter tone change** (`d_mgmt_tone_all`, 23 calls with a previous quarter):
+  Spearman ρ = +0.58 with days 0–4 CAR (p = 0.004); OLS with company FE +2.3 pp/SD (p = 0.038);
+  leave-one-out worst p = 0.013. Mostly Axis (ρ = 0.85, n = 13), ICICI same sign (ρ = 0.43, n = 10).
+  But ~24 correlations were examined (Bonferroni cutoff ≈ 0.002), and it was found *after* looking. It is
+  **not** added to the regression models, since adding it now would be fitting the model to the
+  data it was found in.
+
+**Learn:** a small group can make a company look special (4 bad Axis days), and more data from the
+same company is what exposed it. Also: when you scan many features, the best one always looks
+good. The honest response is to name it as a hypothesis and test it on calls that weren't used
+to find it.
+
+<!-- NEXT (optional): test the QoQ-tone-change lead out of sample (next quarters' calls / other
+     banks); YoY growth controls (hand-filled CSV from results press releases); find ICICI FY26Q1 audio -->
+
 
 
 
